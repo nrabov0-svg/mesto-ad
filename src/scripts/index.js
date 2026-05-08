@@ -1,5 +1,5 @@
-import { getUser, getCards, updateUser, updateAvatar, addCard, removeCard, setLike, unsetLike } from './components/api.js';
-import { createCardElement } from './components/card.js';
+import { getUser, getCards, getCard, updateUser, updateAvatar, addCard, removeCard, setLike, unsetLike } from './components/api.js';
+import { createCardElement, deleteCard, updateLikeState } from './components/card.js';
 import { openPopup, closePopup, initPopupClose } from './components/modal.js';
 import { enableValidation, clearValidation } from './components/validation.js';
 
@@ -68,7 +68,7 @@ const handleImage = (name, link) => {
 
 const handleDelete = (cardEl, cardId) => {
   removeCard(cardId)
-    .then(() => cardEl.remove())
+    .then(() => deleteCard(cardEl))
     .catch(console.error);
 };
 
@@ -77,14 +77,13 @@ const handleLike = (cardEl, data, likeBtn, likeCount) => {
   const action = liked ? unsetLike : setLike;
   action(data._id)
     .then((updated) => {
-      likeBtn.classList.toggle('card__like-button_is-active');
-      likeCount.textContent = updated.likes.length;
+      updateLikeState(likeBtn, likeCount, updated.likes);
       data.likes = updated.likes;
     })
     .catch(console.error);
 };
 
-const handleInfo = (data) => {
+const fillInfoPopup = (data) => {
   infoStats.innerHTML = '';
   infoLikersList.innerHTML = '';
 
@@ -101,8 +100,15 @@ const handleInfo = (data) => {
   } else {
     infoPopup.querySelector('.popup__text').style.display = 'none';
   }
+};
 
-  openPopup(infoPopup);
+const handleInfo = (data) => {
+  getCard(data._id)
+    .then((freshData) => {
+      fillInfoPopup(freshData);
+      openPopup(infoPopup);
+    })
+    .catch(console.error);
 };
 
 const renderCard = (data, userId, prepend = false) => {

@@ -1,6 +1,13 @@
 const getCardTemplate = () =>
   document.getElementById('card-template').content.querySelector('.card').cloneNode(true);
 
+export const deleteCard = (cardEl) => cardEl.remove();
+
+export const updateLikeState = (likeBtn, likeCount, likes) => {
+  likeBtn.classList.toggle('card__like-button_is-active');
+  likeCount.textContent = likes.length;
+};
+
 export const createCardElement = (data, userId, { onImage, onLike, onDelete, onInfo }) => {
   const card = getCardTemplate();
 

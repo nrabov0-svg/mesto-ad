@@ -13,6 +13,9 @@ export const getUser = () =>
 export const getCards = () =>
   fetch(`${BASE_URL}/cards`, { headers: HEADERS }).then(checkResponse);
 
+export const getCard = (cardId) =>
+  fetch(`${BASE_URL}/cards/${cardId}`, { headers: HEADERS }).then(checkResponse);
+
 export const updateUser = (name, about) =>
   fetch(`${BASE_URL}/users/me`, {
     method: 'PATCH',
